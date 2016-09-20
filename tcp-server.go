@@ -1,29 +1,51 @@
 package main
 
-        import "net"
-        import "fmt"
-        import "bufio"
-        import "strings" // only needed below for sample processing
+import "net"
+import "fmt"
+import "bufio"
+import "os"
+import "strings"
 
-        func main() {
+func main() {
 
-        fmt.Println("Launching server...")
-        var port string = "31069"
-        // listen on all interfaces
-        ln, _ := net.Listen("tcp", ":"+port)
-        fmt.Println("Listening on "+ port)
-        // accept connection on port
-        conn, _ := ln.Accept()
+    fmt.Println("Launching server...")
+    var port string = "31069"
+    // listen on all interfaces
+    ln, err := net.Listen("tcp", ":"+port)
+    if err != nil {
+        fmt.Println("error when listening, exit.", err)
+        os.Exit(1)
+    }
+    // run loop forever (or until ctrl-c)
+    // accept connection on port
+    fmt.Println("Listening on "+ port)
+    for {
+        conn, err := ln.Accept()
+        if err != nil {
+            fmt.Println("error when accepting, exit. ", err)
+            os.Exit(1)
+        }
+        go handleClient(conn);
+    }
+}
 
-        // run loop forever (or until ctrl-c)
-        for {
+func handleClient(conn net.Conn) {
+    for {
         // will listen for message to process ending in newline (\n)
-        message, _ := bufio.NewReader(conn).ReadString('\n')
+        message, err := bufio.NewReader(conn).ReadString('\n')
+        if err != nil {
+            fmt.Println("error when reading connection. connection:", conn, err)
+            fmt.Println("Closing the connection")
+            conn.Close()
+            break
+        }
         // output message received
         fmt.Print("Message Received:", string(message))
-        // sample process for string received
-        newmessage := strings.ToUpper(message)
+
+        // process string received
+        newMessage := strings.ToUpper(message)
+
         // send new string back to client
-        conn.Write([]byte(newmessage + "\n"))
-        }
-        }
+        conn.Write([]byte(newMessage + "\n"))
+    }
+}

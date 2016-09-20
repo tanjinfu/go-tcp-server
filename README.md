@@ -1,3 +1,6 @@
+
+
+
 #Run directly
 Open one terminal:
 ```bash
@@ -9,9 +12,9 @@ Open another terminal:
 go run tcp-client.go
 ```
 
-#Dockerize
+#Dockerized
 
 ```bash
- docker build -t tanjinfu/go-tcp-server:v1 .
- docker run -i -t -p 31069:31069 tanjinfu/go-tcp-server:v1
+docker build -t tanjinfu/go-tcp-server:v1 .
+docker run -i -t -p 31069:31069 tanjinfu/go-tcp-server:v1
 ```
