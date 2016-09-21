@@ -5,7 +5,6 @@ import "fmt"
 import "bufio"
 import "os"
 import "time"
-import "strconv"
 
 func main() {
 
@@ -25,7 +24,7 @@ func main() {
     for {
         var text string = "a"
 
-        sendingTime := time.Now().Nanosecond()
+        sendingTime := time.Now()
 
         // send to socket
         fmt.Fprintf(conn, text + "\n")
@@ -36,8 +35,10 @@ func main() {
             fmt.Println("error when reading connection", err)
             break
         }
-        receivingTime := time.Now().Nanosecond();
-        fmt.Println("Message from server: "+message+ " time(Nanosecond): "+strconv.Itoa(receivingTime-sendingTime))
-        time.Sleep(time.Second*2)
+        elapsed := time.Since(sendingTime)
+        fmt.Println("Message received:", message,
+            ", server:", address,
+            ", round trip duration: ", elapsed);
+        time.Sleep(time.Second * 2)
     }
 }

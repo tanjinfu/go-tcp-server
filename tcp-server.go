@@ -5,6 +5,7 @@ import "fmt"
 import "bufio"
 import "os"
 import "strings"
+import "time"
 
 func main() {
 
@@ -40,7 +41,9 @@ func handleClient(conn net.Conn) {
             break
         }
         // output message received
-        fmt.Print("Message Received:", string(message))
+        fmt.Println("Message Received:", string(message),
+            ", client:", conn.RemoteAddr(),
+            ", current time:", time.Now())
 
         // process string received
         newMessage := strings.ToUpper(message)
